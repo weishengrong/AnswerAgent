@@ -1,0 +1,902 @@
+[
+  {
+    "id": 1,
+    "user_input": "查询所有用户的姓名",
+    "expected_intent": "database_query",
+    "expected_need_memory": false,
+    "expected_needs_react": false,
+    "expected_skill": "simple_query",
+    "category": "典型查询"
+  },
+  {
+    "id": 2,
+    "user_input": "统计研发部有多少人",
+    "expected_intent": "database_query",
+    "expected_need_memory": false,
+    "expected_needs_react": false,
+    "expected_skill": "simple_query",
+    "category": "典型查询"
+  },
+  {
+    "id": 3,
+    "user_input": "列出所有设备",
+    "expected_intent": "database_query",
+    "expected_need_memory": false,
+    "expected_needs_react": false,
+    "expected_skill": "simple_query",
+    "category": "典型查询"
+  },
+  {
+    "id": 4,
+    "user_input": "张三的打卡记录",
+    "expected_intent": "database_query",
+    "expected_need_memory": false,
+    "expected_needs_react": false,
+    "expected_skill": "simple_query",
+    "category": "典型查询"
+  },
+  {
+    "id": 5,
+    "user_input": "今天有多少人迟到",
+    "expected_intent": "database_query",
+    "expected_need_memory": false,
+    "expected_needs_react": false,
+    "expected_skill": "simple_query",
+    "category": "典型查询"
+  },
+  {
+    "id": 6,
+    "user_input": "查找所有离职的员工",
+    "expected_intent": "database_query",
+    "expected_need_memory": false,
+    "expected_needs_react": false,
+    "expected_skill": "simple_query",
+    "category": "典型查询"
+  },
+  {
+    "id": 7,
+    "user_input": "显示每个部门的平均工资",
+    "expected_intent": "database_query",
+    "expected_need_memory": false,
+    "expected_needs_react": false,
+    "expected_skill": "simple_query",
+    "category": "典型查询"
+  },
+  {
+    "id": 8,
+    "user_input": "查询上个月的加班记录",
+    "expected_intent": "database_query",
+    "expected_need_memory": false,
+    "expected_needs_react": false,
+    "expected_skill": "simple_query",
+    "category": "典型查询"
+  },
+  {
+    "id": 9,
+    "user_input": "哪些用户没有打卡",
+    "expected_intent": "database_query",
+    "expected_need_memory": false,
+    "expected_needs_react": false,
+    "expected_skill": "simple_query",
+    "category": "典型查询"
+  },
+  {
+    "id": 10,
+    "user_input": "给我看一下所有部门的列表",
+    "expected_intent": "database_query",
+    "expected_need_memory": false,
+    "expected_needs_react": false,
+    "expected_skill": "simple_query",
+    "category": "典型查询"
+  },
+  {
+    "id": 11,
+    "user_input": "查询打卡次数最多的前10名员工",
+    "expected_intent": "database_query",
+    "expected_need_memory": false,
+    "expected_needs_react": false,
+    "expected_skill": "simple_query",
+    "category": "典型查询"
+  },
+  {
+    "id": 12,
+    "user_input": "找出今天最早打卡的三个人",
+    "expected_intent": "database_query",
+    "expected_need_memory": false,
+    "expected_needs_react": false,
+    "expected_skill": "simple_query",
+    "category": "典型查询"
+  },
+  {
+    "id": 13,
+    "user_input": "上个月考勤异常的人有哪些",
+    "expected_intent": "database_query",
+    "expected_need_memory": false,
+    "expected_needs_react": false,
+    "expected_skill": "simple_query",
+    "category": "典型查询"
+  },
+  {
+    "id": 14,
+    "user_input": "每个设备的打卡次数是多少",
+    "expected_intent": "database_query",
+    "expected_need_memory": false,
+    "expected_needs_react": false,
+    "expected_skill": "simple_query",
+    "category": "典型查询"
+  },
+  {
+    "id": 15,
+    "user_input": "查询所有正常状态的考勤设备",
+    "expected_intent": "database_query",
+    "expected_need_memory": false,
+    "expected_needs_react": false,
+    "expected_skill": "simple_query",
+    "category": "典型查询"
+  },
+  {
+    "id": 16,
+    "user_input": "你好",
+    "expected_intent": "daily_chat",
+    "expected_need_memory": false,
+    "expected_needs_react": false,
+    "expected_skill": "data_chat",
+    "category": "典型闲聊"
+  },
+  {
+    "id": 17,
+    "user_input": "早上好",
+    "expected_intent": "daily_chat",
+    "expected_need_memory": false,
+    "expected_needs_react": false,
+    "expected_skill": "data_chat",
+    "category": "典型闲聊"
+  },
+  {
+    "id": 18,
+    "user_input": "谢谢",
+    "expected_intent": "daily_chat",
+    "expected_need_memory": false,
+    "expected_needs_react": false,
+    "expected_skill": "data_chat",
+    "category": "典型闲聊"
+  },
+  {
+    "id": 19,
+    "user_input": "再见",
+    "expected_intent": "daily_chat",
+    "expected_need_memory": false,
+    "expected_needs_react": false,
+    "expected_skill": "data_chat",
+    "category": "典型闲聊"
+  },
+  {
+    "id": 20,
+    "user_input": "你能做什么",
+    "expected_intent": "daily_chat",
+    "expected_need_memory": false,
+    "expected_needs_react": false,
+    "expected_skill": "data_chat",
+    "category": "典型闲聊"
+  },
+  {
+    "id": 21,
+    "user_input": "你是谁",
+    "expected_intent": "daily_chat",
+    "expected_need_memory": false,
+    "expected_needs_react": false,
+    "expected_skill": "data_chat",
+    "category": "典型闲聊"
+  },
+  {
+    "id": 22,
+    "user_input": "讲个笑话",
+    "expected_intent": "daily_chat",
+    "expected_need_memory": false,
+    "expected_needs_react": false,
+    "expected_skill": "data_chat",
+    "category": "典型闲聊"
+  },
+  {
+    "id": 23,
+    "user_input": "今天天气不错",
+    "expected_intent": "daily_chat",
+    "expected_need_memory": false,
+    "expected_needs_react": false,
+    "expected_skill": "data_chat",
+    "category": "典型闲聊"
+  },
+  {
+    "id": 24,
+    "user_input": "哈哈",
+    "expected_intent": "daily_chat",
+    "expected_need_memory": false,
+    "expected_needs_react": false,
+    "expected_skill": "data_chat",
+    "category": "典型闲聊"
+  },
+  {
+    "id": 25,
+    "user_input": "好的知道了",
+    "expected_intent": "daily_chat",
+    "expected_need_memory": false,
+    "expected_needs_react": false,
+    "expected_skill": "data_chat",
+    "category": "典型闲聊"
+  },
+  {
+    "id": 26,
+    "user_input": "辛苦了",
+    "expected_intent": "daily_chat",
+    "expected_need_memory": false,
+    "expected_needs_react": false,
+    "expected_skill": "data_chat",
+    "category": "典型闲聊"
+  },
+  {
+    "id": 27,
+    "user_input": "没事了",
+    "expected_intent": "daily_chat",
+    "expected_need_memory": false,
+    "expected_needs_react": false,
+    "expected_skill": "data_chat",
+    "category": "典型闲聊"
+  },
+  {
+    "id": 28,
+    "user_input": "晚安",
+    "expected_intent": "daily_chat",
+    "expected_need_memory": false,
+    "expected_needs_react": false,
+    "expected_skill": "data_chat",
+    "category": "典型闲聊"
+  },
+  {
+    "id": 29,
+    "user_input": "你好厉害",
+    "expected_intent": "daily_chat",
+    "expected_need_memory": false,
+    "expected_needs_react": false,
+    "expected_skill": "data_chat",
+    "category": "典型闲聊"
+  },
+  {
+    "id": 30,
+    "user_input": "随便聊聊",
+    "expected_intent": "daily_chat",
+    "expected_need_memory": false,
+    "expected_needs_react": false,
+    "expected_skill": "data_chat",
+    "category": "典型闲聊"
+  },
+  {
+    "id": 31,
+    "user_input": "有哪些人",
+    "expected_intent": "database_query",
+    "expected_need_memory": false,
+    "expected_needs_react": false,
+    "expected_skill": "simple_query",
+    "category": "边界-查询语气像闲聊"
+  },
+  {
+    "id": 32,
+    "user_input": "告诉我所有人的名字",
+    "expected_intent": "database_query",
+    "expected_need_memory": false,
+    "expected_needs_react": false,
+    "expected_skill": "simple_query",
+    "category": "边界-查询语气像闲聊"
+  },
+  {
+    "id": 33,
+    "user_input": "最近有没有人迟到",
+    "expected_intent": "database_query",
+    "expected_need_memory": false,
+    "expected_needs_react": false,
+    "expected_skill": "simple_query",
+    "category": "边界-查询语气像闲聊"
+  },
+  {
+    "id": 34,
+    "user_input": "帮我看看今天的打卡情况",
+    "expected_intent": "database_query",
+    "expected_need_memory": false,
+    "expected_needs_react": false,
+    "expected_skill": "simple_query",
+    "category": "边界-查询语气像闲聊"
+  },
+  {
+    "id": 35,
+    "user_input": "谁还没打卡",
+    "expected_intent": "database_query",
+    "expected_need_memory": false,
+    "expected_needs_react": false,
+    "expected_skill": "simple_query",
+    "category": "边界-查询语气像闲聊"
+  },
+  {
+    "id": 36,
+    "user_input": "大家都在哪个部门",
+    "expected_intent": "database_query",
+    "expected_need_memory": false,
+    "expected_needs_react": false,
+    "expected_skill": "simple_query",
+    "category": "边界-查询语气像闲聊"
+  },
+  {
+    "id": 37,
+    "user_input": "有没有什么异常",
+    "expected_intent": "database_query",
+    "expected_need_memory": false,
+    "expected_needs_react": false,
+    "expected_skill": "simple_query",
+    "category": "边界-查询语气像闲聊"
+  },
+  {
+    "id": 38,
+    "user_input": "我想知道张三在不在",
+    "expected_intent": "database_query",
+    "expected_need_memory": false,
+    "expected_needs_react": false,
+    "expected_skill": "simple_query",
+    "category": "边界-查询语气像闲聊"
+  },
+  {
+    "id": 39,
+    "user_input": "给我看一下考勤数据",
+    "expected_intent": "database_query",
+    "expected_need_memory": false,
+    "expected_needs_react": false,
+    "expected_skill": "simple_query",
+    "category": "边界-查询语气像闲聊"
+  },
+  {
+    "id": 40,
+    "user_input": "今天出勤怎么样",
+    "expected_intent": "database_query",
+    "expected_need_memory": false,
+    "expected_needs_react": false,
+    "expected_skill": "simple_query",
+    "category": "边界-查询语气像闲聊"
+  },
+  {
+    "id": 41,
+    "user_input": "那个新来的员工叫什么",
+    "expected_intent": "database_query",
+    "expected_need_memory": false,
+    "expected_needs_react": false,
+    "expected_skill": "simple_query",
+    "category": "边界-查询语气像闲聊"
+  },
+  {
+    "id": 42,
+    "user_input": "最近加班多不多",
+    "expected_intent": "database_query",
+    "expected_need_memory": false,
+    "expected_needs_react": false,
+    "expected_skill": "simple_query",
+    "category": "边界-查询语气像闲聊"
+  },
+  {
+    "id": 43,
+    "user_input": "考勤系统好用吗",
+    "expected_intent": "daily_chat",
+    "expected_need_memory": false,
+    "expected_needs_react": false,
+    "expected_skill": "data_chat",
+    "category": "边界-闲聊涉及业务词"
+  },
+  {
+    "id": 44,
+    "user_input": "打卡机怎么用",
+    "expected_intent": "daily_chat",
+    "expected_need_memory": false,
+    "expected_needs_react": false,
+    "expected_skill": "data_chat",
+    "category": "边界-闲聊涉及业务词"
+  },
+  {
+    "id": 45,
+    "user_input": "你觉得这个考勤制度合理吗",
+    "expected_intent": "daily_chat",
+    "expected_need_memory": false,
+    "expected_needs_react": false,
+    "expected_skill": "data_chat",
+    "category": "边界-闲聊涉及业务词"
+  },
+  {
+    "id": 46,
+    "user_input": "加班太累了",
+    "expected_intent": "daily_chat",
+    "expected_need_memory": false,
+    "expected_needs_react": false,
+    "expected_skill": "data_chat",
+    "category": "边界-闲聊涉及业务词"
+  },
+  {
+    "id": 47,
+    "user_input": "工资什么时候发",
+    "expected_intent": "daily_chat",
+    "expected_need_memory": false,
+    "expected_needs_react": false,
+    "expected_skill": "data_chat",
+    "category": "边界-闲聊涉及业务词"
+  },
+  {
+    "id": 48,
+    "user_input": "请假怎么申请",
+    "expected_intent": "daily_chat",
+    "expected_need_memory": false,
+    "expected_needs_react": false,
+    "expected_skill": "data_chat",
+    "category": "边界-闲聊涉及业务词"
+  },
+  {
+    "id": 49,
+    "user_input": "考勤数据准不准",
+    "expected_intent": "daily_chat",
+    "expected_need_memory": false,
+    "expected_needs_react": false,
+    "expected_skill": "data_chat",
+    "category": "边界-闲聊涉及业务词"
+  },
+  {
+    "id": 50,
+    "user_input": "你们公司用什么考勤系统",
+    "expected_intent": "daily_chat",
+    "expected_need_memory": false,
+    "expected_needs_react": false,
+    "expected_skill": "data_chat",
+    "category": "边界-闲聊涉及业务词"
+  },
+  {
+    "id": 51,
+    "user_input": "我讨厌打卡",
+    "expected_intent": "daily_chat",
+    "expected_need_memory": false,
+    "expected_needs_react": false,
+    "expected_skill": "data_chat",
+    "category": "边界-闲聊涉及业务词"
+  },
+  {
+    "id": 52,
+    "user_input": "今天不想上班",
+    "expected_intent": "daily_chat",
+    "expected_need_memory": false,
+    "expected_needs_react": false,
+    "expected_skill": "data_chat",
+    "category": "边界-闲聊涉及业务词"
+  },
+  {
+    "id": 53,
+    "user_input": "那他们的考勤呢",
+    "expected_intent": "database_query",
+    "expected_need_memory": true,
+    "expected_needs_react": false,
+    "expected_skill": "complex_query",
+    "category": "指代消解"
+  },
+  {
+    "id": 54,
+    "user_input": "他上个月打卡了吗",
+    "expected_intent": "database_query",
+    "expected_need_memory": true,
+    "expected_needs_react": false,
+    "expected_skill": "complex_query",
+    "category": "指代消解"
+  },
+  {
+    "id": 55,
+    "user_input": "刚才那个人的信息",
+    "expected_intent": "database_query",
+    "expected_need_memory": true,
+    "expected_needs_react": false,
+    "expected_skill": "complex_query",
+    "category": "指代消解"
+  },
+  {
+    "id": 56,
+    "user_input": "那他呢",
+    "expected_intent": "database_query",
+    "expected_need_memory": true,
+    "expected_needs_react": false,
+    "expected_skill": "complex_query",
+    "category": "指代消解"
+  },
+  {
+    "id": 57,
+    "user_input": "上次说的那个部门呢",
+    "expected_intent": "database_query",
+    "expected_need_memory": true,
+    "expected_needs_react": false,
+    "expected_skill": "complex_query",
+    "category": "指代消解"
+  },
+  {
+    "id": 58,
+    "user_input": "他们的加班情况怎么样",
+    "expected_intent": "database_query",
+    "expected_need_memory": true,
+    "expected_needs_react": false,
+    "expected_skill": "complex_query",
+    "category": "指代消解"
+  },
+  {
+    "id": 59,
+    "user_input": "之前查的那个人还在职吗",
+    "expected_intent": "database_query",
+    "expected_need_memory": true,
+    "expected_needs_react": false,
+    "expected_skill": "complex_query",
+    "category": "指代消解"
+  },
+  {
+    "id": 60,
+    "user_input": "那些人的考勤记录",
+    "expected_intent": "database_query",
+    "expected_need_memory": true,
+    "expected_needs_react": false,
+    "expected_skill": "complex_query",
+    "category": "指代消解"
+  },
+  {
+    "id": 61,
+    "user_input": "他呢",
+    "expected_intent": "database_query",
+    "expected_need_memory": true,
+    "expected_needs_react": false,
+    "expected_skill": "complex_query",
+    "category": "指代消解"
+  },
+  {
+    "id": 62,
+    "user_input": "刚才查的结果再给我看一下",
+    "expected_intent": "database_query",
+    "expected_need_memory": true,
+    "expected_needs_react": false,
+    "expected_skill": "complex_query",
+    "category": "指代消解"
+  },
+  {
+    "id": 63,
+    "user_input": "我的考勤怎么样",
+    "expected_intent": "database_query",
+    "expected_need_memory": true,
+    "expected_needs_react": false,
+    "expected_skill": "complex_query",
+    "category": "指代消解"
+  },
+  {
+    "id": 64,
+    "user_input": "我们部门的打卡数据",
+    "expected_intent": "database_query",
+    "expected_need_memory": true,
+    "expected_needs_react": false,
+    "expected_skill": "complex_query",
+    "category": "指代消解"
+  },
+  {
+    "id": 65,
+    "user_input": "查询所有用户的手机号",
+    "expected_intent": "database_query",
+    "expected_need_memory": false,
+    "expected_needs_react": false,
+    "expected_skill": "simple_query",
+    "category": "独立查询"
+  },
+  {
+    "id": 66,
+    "user_input": "统计全公司的总人数",
+    "expected_intent": "database_query",
+    "expected_need_memory": false,
+    "expected_needs_react": false,
+    "expected_skill": "simple_query",
+    "category": "独立查询"
+  },
+  {
+    "id": 67,
+    "user_input": "列出市场部的所有员工",
+    "expected_intent": "database_query",
+    "expected_need_memory": false,
+    "expected_needs_react": false,
+    "expected_skill": "simple_query",
+    "category": "独立查询"
+  },
+  {
+    "id": 68,
+    "user_input": "查询前台打卡机的设备编号",
+    "expected_intent": "database_query",
+    "expected_need_memory": false,
+    "expected_needs_react": false,
+    "expected_skill": "simple_query",
+    "category": "独立查询"
+  },
+  {
+    "id": 69,
+    "user_input": "告诉我全部人的名字",
+    "expected_intent": "database_query",
+    "expected_need_memory": false,
+    "expected_needs_react": false,
+    "expected_skill": "simple_query",
+    "category": "独立查询"
+  },
+  {
+    "id": 70,
+    "user_input": "查询李四的紧急联系人",
+    "expected_intent": "database_query",
+    "expected_need_memory": false,
+    "expected_needs_react": false,
+    "expected_skill": "simple_query",
+    "category": "独立查询"
+  },
+  {
+    "id": 71,
+    "user_input": "显示所有部门的名称",
+    "expected_intent": "database_query",
+    "expected_need_memory": false,
+    "expected_needs_react": false,
+    "expected_skill": "simple_query",
+    "category": "独立查询"
+  },
+  {
+    "id": 72,
+    "user_input": "查询今天上班打卡的所有记录",
+    "expected_intent": "database_query",
+    "expected_need_memory": false,
+    "expected_needs_react": false,
+    "expected_skill": "simple_query",
+    "category": "独立查询"
+  },
+  {
+    "id": 73,
+    "user_input": "找出所有女生的姓名",
+    "expected_intent": "database_query",
+    "expected_need_memory": false,
+    "expected_needs_react": false,
+    "expected_skill": "simple_query",
+    "category": "独立查询"
+  },
+  {
+    "id": 74,
+    "user_input": "查询所有被禁用的设备",
+    "expected_intent": "database_query",
+    "expected_need_memory": false,
+    "expected_needs_react": false,
+    "expected_skill": "simple_query",
+    "category": "独立查询"
+  },
+  {
+    "id": 75,
+    "user_input": "列出所有正常状态的用户",
+    "expected_intent": "database_query",
+    "expected_need_memory": false,
+    "expected_needs_react": false,
+    "expected_skill": "simple_query",
+    "category": "独立查询"
+  },
+  {
+    "id": 76,
+    "user_input": "查询参加考勤的用户有多少人",
+    "expected_intent": "database_query",
+    "expected_need_memory": false,
+    "expected_needs_react": false,
+    "expected_skill": "simple_query",
+    "category": "独立查询"
+  },
+  {
+    "id": 77,
+    "user_input": "对比研发部和市场部的考勤情况",
+    "expected_intent": "database_query",
+    "expected_need_memory": false,
+    "expected_needs_react": true,
+    "expected_skill": "complex_query",
+    "category": "复杂查询"
+  },
+  {
+    "id": 78,
+    "user_input": "分析各部门每月的加班趋势",
+    "expected_intent": "database_query",
+    "expected_need_memory": false,
+    "expected_needs_react": true,
+    "expected_skill": "complex_query",
+    "category": "复杂查询"
+  },
+  {
+    "id": 79,
+    "user_input": "查询既在A部门又在B部门兼职的员工",
+    "expected_intent": "database_query",
+    "expected_need_memory": false,
+    "expected_needs_react": true,
+    "expected_skill": "complex_query",
+    "category": "复杂查询"
+  },
+  {
+    "id": 80,
+    "user_input": "统计每个季度各部门的出勤率排名",
+    "expected_intent": "database_query",
+    "expected_need_memory": false,
+    "expected_needs_react": true,
+    "expected_skill": "complex_query",
+    "category": "复杂查询"
+  },
+  {
+    "id": 81,
+    "user_input": "对比本月和上月的迟到人数变化",
+    "expected_intent": "database_query",
+    "expected_need_memory": false,
+    "expected_needs_react": true,
+    "expected_skill": "complex_query",
+    "category": "复杂查询"
+  },
+  {
+    "id": 82,
+    "user_input": "查询打卡时间与上班时间相差超过30分钟的异常记录",
+    "expected_intent": "database_query",
+    "expected_need_memory": false,
+    "expected_needs_react": true,
+    "expected_skill": "complex_query",
+    "category": "复杂查询"
+  },
+  {
+    "id": 83,
+    "user_input": "分析哪些用户连续三天以上没有打卡",
+    "expected_intent": "database_query",
+    "expected_need_memory": false,
+    "expected_needs_react": true,
+    "expected_skill": "complex_query",
+    "category": "复杂查询"
+  },
+  {
+    "id": 84,
+    "user_input": "查询每个部门使用每台设备的打卡次数并排序",
+    "expected_intent": "database_query",
+    "expected_need_memory": false,
+    "expected_needs_react": true,
+    "expected_skill": "complex_query",
+    "category": "复杂查询"
+  },
+  {
+    "id": 85,
+    "user_input": "找出上班打卡最早和下班打卡最晚的人",
+    "expected_intent": "database_query",
+    "expected_need_memory": false,
+    "expected_needs_react": true,
+    "expected_skill": "complex_query",
+    "category": "复杂查询"
+  },
+  {
+    "id": 86,
+    "user_input": "查询同一天在多台设备上打卡的用户",
+    "expected_intent": "database_query",
+    "expected_need_memory": false,
+    "expected_needs_react": true,
+    "expected_skill": "complex_query",
+    "category": "复杂查询"
+  },
+  {
+    "id": 87,
+    "user_input": "按周统计每个部门的平均工作时长",
+    "expected_intent": "database_query",
+    "expected_need_memory": false,
+    "expected_needs_react": true,
+    "expected_skill": "complex_query",
+    "category": "复杂查询"
+  },
+  {
+    "id": 88,
+    "user_input": "查询跨部门协作项目中各成员的考勤对比",
+    "expected_intent": "database_query",
+    "expected_need_memory": false,
+    "expected_needs_react": true,
+    "expected_skill": "complex_query",
+    "category": "复杂查询"
+  },
+  {
+    "id": 89,
+    "user_input": "查张三的打卡",
+    "expected_intent": "database_query",
+    "expected_need_memory": false,
+    "expected_needs_react": false,
+    "expected_skill": "simple_query",
+    "category": "简单查询"
+  },
+  {
+    "id": 90,
+    "user_input": "所有用户",
+    "expected_intent": "database_query",
+    "expected_need_memory": false,
+    "expected_needs_react": false,
+    "expected_skill": "simple_query",
+    "category": "简单查询"
+  },
+  {
+    "id": 91,
+    "user_input": "部门列表",
+    "expected_intent": "database_query",
+    "expected_need_memory": false,
+    "expected_needs_react": false,
+    "expected_skill": "simple_query",
+    "category": "简单查询"
+  },
+  {
+    "id": 92,
+    "user_input": "设备数量",
+    "expected_intent": "database_query",
+    "expected_need_memory": false,
+    "expected_needs_react": false,
+    "expected_skill": "simple_query",
+    "category": "简单查询"
+  },
+  {
+    "id": 93,
+    "user_input": "今天打卡的人",
+    "expected_intent": "database_query",
+    "expected_need_memory": false,
+    "expected_needs_react": false,
+    "expected_skill": "simple_query",
+    "category": "简单查询"
+  },
+  {
+    "id": 94,
+    "user_input": "李四在哪个部门",
+    "expected_intent": "database_query",
+    "expected_need_memory": false,
+    "expected_needs_react": false,
+    "expected_skill": "simple_query",
+    "category": "简单查询"
+  },
+  {
+    "id": 95,
+    "user_input": "总人数",
+    "expected_intent": "database_query",
+    "expected_need_memory": false,
+    "expected_needs_react": false,
+    "expected_skill": "simple_query",
+    "category": "简单查询"
+  },
+  {
+    "id": 96,
+    "user_input": "前台打卡机编号",
+    "expected_intent": "database_query",
+    "expected_need_memory": false,
+    "expected_needs_react": false,
+    "expected_skill": "simple_query",
+    "category": "简单查询"
+  },
+  {
+    "id": 97,
+    "user_input": "查询所有部门",
+    "expected_intent": "database_query",
+    "expected_need_memory": false,
+    "expected_needs_react": false,
+    "expected_skill": "simple_query",
+    "category": "简单查询"
+  },
+  {
+    "id": 98,
+    "user_input": "王五的手机号",
+    "expected_intent": "database_query",
+    "expected_need_memory": false,
+    "expected_needs_react": false,
+    "expected_skill": "simple_query",
+    "category": "简单查询"
+  },
+  {
+    "id": 99,
+    "user_input": "正常设备有几台",
+    "expected_intent": "database_query",
+    "expected_need_memory": false,
+    "expected_needs_react": false,
+    "expected_skill": "simple_query",
+    "category": "简单查询"
+  },
+  {
+    "id": 100,
+    "user_input": "今天上班打卡记录",
+    "expected_intent": "database_query",
+    "expected_need_memory": false,
+    "expected_needs_react": false,
+    "expected_skill": "simple_query",
+    "category": "简单查询"
+  }
+]

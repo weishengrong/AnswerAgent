@@ -1,0 +1,177 @@
+[
+  {
+    "id": 1,
+    "question": "查询所有用户的姓名",
+    "gold_sql": "SELECT name FROM user",
+    "difficulty": "simple",
+    "category": "单表查询"
+  },
+  {
+    "id": 2,
+    "question": "查询所有正常状态的用户",
+    "gold_sql": "SELECT * FROM user WHERE status = 0",
+    "difficulty": "simple",
+    "category": "单表条件查询"
+  },
+  {
+    "id": 3,
+    "question": "查询所有男生的姓名和手机号",
+    "gold_sql": "SELECT name, phone FROM user WHERE sex = 1",
+    "difficulty": "simple",
+    "category": "单表条件查询"
+  },
+  {
+    "id": 4,
+    "question": "查询参加考勤的用户有多少人",
+    "gold_sql": "SELECT COUNT(*) FROM user WHERE attend_type = 1",
+    "difficulty": "simple",
+    "category": "单表聚合"
+  },
+  {
+    "id": 5,
+    "question": "查询所有部门的打卡记录",
+    "gold_sql": "SELECT * FROM check_record ORDER BY check_time DESC",
+    "difficulty": "simple",
+    "category": "单表排序"
+  },
+  {
+    "id": 6,
+    "question": "查询所有正常状态的考勤设备",
+    "gold_sql": "SELECT * FROM device WHERE status = 0",
+    "difficulty": "simple",
+    "category": "单表条件查询"
+  },
+  {
+    "id": 7,
+    "question": "查询张三的打卡记录",
+    "gold_sql": "SELECT cr.* FROM check_record cr JOIN user u ON cr.user_id = u.id WHERE u.name = '张三'",
+    "difficulty": "medium",
+    "category": "两表关联"
+  },
+  {
+    "id": 8,
+    "question": "查询前台打卡机的所有打卡记录",
+    "gold_sql": "SELECT cr.* FROM check_record cr JOIN device d ON cr.device_id = d.id WHERE d.name = '前台打卡机'",
+    "difficulty": "medium",
+    "category": "两表关联"
+  },
+  {
+    "id": 9,
+    "question": "查询每个部门的用户数量",
+    "gold_sql": "SELECT department_id, COUNT(*) as user_count FROM user GROUP BY department_id",
+    "difficulty": "medium",
+    "category": "分组聚合"
+  },
+  {
+    "id": 10,
+    "question": "查询今天打卡的用户有哪些",
+    "gold_sql": "SELECT DISTINCT u.name FROM check_record cr JOIN user u ON cr.user_id = u.id WHERE DATE(cr.check_time) = CURDATE()",
+    "difficulty": "medium",
+    "category": "两表关联+日期"
+  },
+  {
+    "id": 11,
+    "question": "查询张三最近的10条打卡记录",
+    "gold_sql": "SELECT cr.* FROM check_record cr JOIN user u ON cr.user_id = u.id WHERE u.name = '张三' ORDER BY cr.check_time DESC LIMIT 10",
+    "difficulty": "medium",
+    "category": "两表关联+排序+限制"
+  },
+  {
+    "id": 12,
+    "question": "查询每个设备的打卡次数",
+    "gold_sql": "SELECT d.name, COUNT(cr.id) as check_count FROM device d LEFT JOIN check_record cr ON d.id = cr.device_id GROUP BY d.id, d.name",
+    "difficulty": "medium",
+    "category": "两表关联+分组"
+  },
+  {
+    "id": 13,
+    "question": "查询上班打卡(type=0)的用户名单",
+    "gold_sql": "SELECT DISTINCT u.name FROM check_record cr JOIN user u ON cr.user_id = u.id WHERE cr.type = 0",
+    "difficulty": "medium",
+    "category": "两表关联+条件"
+  },
+  {
+    "id": 14,
+    "question": "查询张三在哪个部门，使用哪台设备打卡",
+    "gold_sql": "SELECT u.name, u.department_id, d.name as device_name FROM user u JOIN check_record cr ON u.id = cr.user_id JOIN device d ON cr.device_id = d.id WHERE u.name = '张三'",
+    "difficulty": "hard",
+    "category": "三表关联"
+  },
+  {
+    "id": 15,
+    "question": "统计每个部门今天的打卡人数",
+    "gold_sql": "SELECT u.department_id, COUNT(DISTINCT cr.user_id) as checkin_count FROM check_record cr JOIN user u ON cr.user_id = u.id WHERE DATE(cr.check_time) = CURDATE() GROUP BY u.department_id",
+    "difficulty": "hard",
+    "category": "多表关联+聚合+日期"
+  },
+  {
+    "id": 16,
+    "question": "查询没有打卡记录的用户",
+    "gold_sql": "SELECT u.name FROM user u LEFT JOIN check_record cr ON u.id = cr.user_id WHERE cr.id IS NULL",
+    "difficulty": "hard",
+    "category": "左连接+空值判断"
+  },
+  {
+    "id": 17,
+    "question": "查询打卡次数最多的前5名用户",
+    "gold_sql": "SELECT u.name, COUNT(cr.id) as check_count FROM user u JOIN check_record cr ON u.id = cr.user_id GROUP BY u.id, u.name ORDER BY check_count DESC LIMIT 5",
+    "difficulty": "hard",
+    "category": "多表关联+排序+限制"
+  },
+  {
+    "id": 18,
+    "question": "查询每个部门使用每台设备的打卡次数",
+    "gold_sql": "SELECT u.department_id, d.name as device_name, COUNT(cr.id) as check_count FROM check_record cr JOIN user u ON cr.user_id = u.id JOIN device d ON cr.device_id = d.id GROUP BY u.department_id, d.id, d.name",
+    "difficulty": "hard",
+    "category": "三表关联+多维分组"
+  },
+  {
+    "id": 19,
+    "question": "查询上班打卡时间最早的3个用户",
+    "gold_sql": "SELECT u.name, cr.check_time FROM check_record cr JOIN user u ON cr.user_id = u.id WHERE cr.type = 0 ORDER BY cr.check_time ASC LIMIT 3",
+    "difficulty": "hard",
+    "category": "两表关联+排序+限制"
+  },
+  {
+    "id": 20,
+    "question": "查询今天迟到的用户（9点之后上班打卡的）",
+    "gold_sql": "SELECT u.name, cr.check_time FROM check_record cr JOIN user u ON cr.user_id = u.id WHERE cr.type = 0 AND DATE(cr.check_time) = CURDATE() AND TIME(cr.check_time) > '09:00:00'",
+    "difficulty": "hard",
+    "category": "多条件+日期函数"
+  },
+  {
+    "id": 21,
+    "question": "你好",
+    "gold_sql": "",
+    "difficulty": "chat",
+    "category": "日常问候"
+  },
+  {
+    "id": 22,
+    "question": "你能做什么",
+    "gold_sql": "",
+    "difficulty": "chat",
+    "category": "能力询问"
+  },
+  {
+    "id": 23,
+    "question": "我们有哪些数据表",
+    "gold_sql": "",
+    "difficulty": "chat",
+    "category": "表结构询问"
+  },
+  {
+    "id": 24,
+    "question": "查询所有被禁用的用户",
+    "gold_sql": "SELECT * FROM user WHERE status = 1",
+    "difficulty": "simple",
+    "category": "单表条件查询"
+  },
+  {
+    "id": 25,
+    "question": "查询每个用户的紧急联系人信息",
+    "gold_sql": "SELECT name, emergency_name, emergency_phone FROM user WHERE emergency_name IS NOT NULL",
+    "difficulty": "medium",
+    "category": "单表条件+空值"
+  }
+]

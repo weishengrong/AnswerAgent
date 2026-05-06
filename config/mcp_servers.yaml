@@ -1,0 +1,52 @@
+servers:
+  - name: time-tools
+    transport: stdio
+    command: python
+    args:
+      - mcp_servers/time_server.py
+    enabled: true
+    description: "时间工具：获取当前时间、解析自然语言日期范围、判断工作日、计算工作日天数"
+
+  - name: calendar-tools
+    transport: sse
+    url: "http://127.0.0.1:9001/sse"
+    enabled: false
+    description: "日历工具：查询中国法定节假日、管理自定义日历事件、月度概览"
+    startup_hint: "需先启动：python mcp_servers/calendar_server.py"
+
+  - name: chart-tools
+    transport: stdio
+    command: python
+    args:
+      - mcp_servers/chart_server.py
+    enabled: true
+    description: "图表工具：生成柱状图、折线图、饼图等数据可视化图表"
+
+  - name: amap-maps
+    transport: sse
+    url: "https://mcp.amap.com/sse?key=${AMAP_API_KEY}"
+    enabled: false
+    description: "高德地图：天气查询、地理编码、路径规划、周边搜索"
+    env:
+      AMAP_API_KEY: "${AMAP_API_KEY}"
+
+  - name: dingtalk
+    transport: stdio
+    command: npx
+    args:
+      - "-y"
+      - "@dingtalk/dingtalk-mcp-server"
+    enabled: false
+    description: "钉钉：通讯录查询、日程管理、发送通知、待办任务"
+    env:
+      DINGTALK_APP_KEY: "${DINGTALK_APP_KEY}"
+      DINGTALK_APP_SECRET: "${DINGTALK_APP_SECRET}"
+
+  - name: quickchart
+    transport: stdio
+    command: npx
+    args:
+      - "-y"
+      - "@gongrzhe/quickchart-mcp-server"
+    enabled: false
+    description: "QuickChart：通过 Chart.js 配置生成图表 URL（npm 社区版）"
