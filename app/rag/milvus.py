@@ -21,7 +21,8 @@ class MilvusClientFactory:
     def __call__(self) -> MilvusClient:
         if self._client is None:
             self._client = MilvusClient(
-                f"http://{milvus_settings.MILVUS_HOST}:{milvus_settings.MILVUS_PORT}"
+                # f"http://{milvus_settings.MILVUS_HOST}:{milvus_settings.MILVUS_PORT}"
+                patn = milvus_settings.MILVUS_LITE_PATH
             )
         return self._client
 
@@ -47,7 +48,9 @@ def create_schema() -> CollectionSchema:
 
 
 def init_milvus(collection_name: str) -> Collection:
-    connections.connect(host=milvus_settings.MILVUS_HOST, port=milvus_settings.MILVUS_PORT)
+    # 在服务器上用milvuslite，不用connect，本地则需要
+    # connections.connect(host=milvus_settings.MILVUS_HOST, port=milvus_settings.MILVUS_PORT)
+
 
     if utility.has_collection(collection_name):
         print(f"集合 {collection_name} 已存在，将删除重建以确保数据干净...")

@@ -30,10 +30,11 @@ embedding = EmbeddingSettings()
 
 
 class MilvusSettings(BaseSettings):
-    MILVUS_HOST: str
-    MILVUS_PORT: str
-    MILVUS_USER: str
-    MILVUS_PWD: str
+    MILVUS_LITE_PATH: str = "./milvus_data.db"
+    MILVUS_HOST: str = ""
+    MILVUS_PORT: str = ""
+    MILVUS_USER: str = ""
+    MILVUS_PWD: str = ""
 
     model_config = SettingsConfigDict(
         env_file=os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", ".env"),

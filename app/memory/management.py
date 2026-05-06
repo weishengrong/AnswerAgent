@@ -47,7 +47,8 @@ class MemoryService:
             "vector_store": {
                 "provider": "milvus",
                 "config": {
-                    "url": f"http://{milvus_settings.MILVUS_HOST}:{milvus_settings.MILVUS_PORT}",
+                    # "url": f"http://{milvus_settings.MILVUS_HOST}:{milvus_settings.MILVUS_PORT}",
+                    "local_path": milvus_settings.MILVUS_LITE_PATH,
                     "collection_name": "answer_agent_memory",
                     "embedding_model_dims": 1024,
                     "token": "",
@@ -70,26 +71,29 @@ class MemoryService:
         self._ensure_collection_loaded()
 
     def _ensure_collection_loaded(self):
-        try:
-            from pymilvus import utility, connections, Collection
+        # try:
+        #     from pymilvus import utility, connections, Collection
+        #
+        #     try:
+        #         connections.connect(
+        #             alias="memory_service",
+        #             host=milvus_settings.MILVUS_HOST,
+        #             port=milvus_settings.MILVUS_PORT
+        #         )
+        #     except Exception:
+        #         pass
+        #
+        #     if utility.has_collection("answer_agent_memory", using="memory_service"):
+        #         col = Collection("answer_agent_memory", using="memory_service")
+        #         col.load()
+        #         logger.info("✅ 集合 answer_agent_memory 已加载到内存")
+        #     else:
+        #         logger.info("ℹ️ 集合 answer_agent_memory 不存在，将由 mem0 自动创建")
+        # except Exception as e:
+        #     logger.warning(f"⚠️ 显式加载集合失败（非致命，mem0 可能自行处理）：{e}")
 
-            try:
-                connections.connect(
-                    alias="memory_service",
-                    host=milvus_settings.MILVUS_HOST,
-                    port=milvus_settings.MILVUS_PORT
-                )
-            except Exception:
-                pass
-
-            if utility.has_collection("answer_agent_memory", using="memory_service"):
-                col = Collection("answer_agent_memory", using="memory_service")
-                col.load()
-                logger.info("✅ 集合 answer_agent_memory 已加载到内存")
-            else:
-                logger.info("ℹ️ 集合 answer_agent_memory 不存在，将由 mem0 自动创建")
-        except Exception as e:
-            logger.warning(f"⚠️ 显式加载集合失败（非致命，mem0 可能自行处理）：{e}")
+        # Milvus Lite 不需要显式加载集合，会自动处理
+        logger.info("ℹ️ Milvus Lite 模式，集合将自动创建和加载")
 
     def _handle_error(self, operation: str, error: Exception, fallback=None):
         if _is_recoverable_error(error):

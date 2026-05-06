@@ -16,17 +16,21 @@ import uuid
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     # 检查milvus健康状态
-    try:
-        from pymilvus import connections
-        connections.connect(
-            host=milvus_settings.MILVUS_HOST,
-            port=milvus_settings.MILVUS_PORT
-        )
-        service_health.mark_milvus_up()
-        logging.info("✅ Milvus 连接成功")
-    except Exception as e:
-        service_health.mark_milvus_down()
-        logging.warning(f"⚠️ Milvus 连接失败（降级运行）：{e}")
+    # try:
+    #     from pymilvus import connections
+    #     connections.connect(
+    #         host=milvus_settings.MILVUS_HOST,
+    #         port=milvus_settings.MILVUS_PORT
+    #     )
+    #     service_health.mark_milvus_up()
+    #     logging.info("✅ Milvus 连接成功")
+    # except Exception as e:
+    #     service_health.mark_milvus_down()
+    #     logging.warning(f"⚠️ Milvus 连接失败（降级运行）：{e}")
+
+    # Milvus Lite 不需要网络连接，直接标记为健康
+    service_health.mark_milvus_up()
+    logging.info("✅ Milvus Lite 已初始化")
 
     if service_health.milvus_healthy:
         try:

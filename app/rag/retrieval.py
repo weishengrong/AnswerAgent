@@ -75,16 +75,18 @@ def _ensure_collection_loaded(collection_name: str, retries: int = 3) -> bool:
 
 
 def retrieve_child_chunks(question: str, limit: int = 10) -> List[Dict]:
-    from pymilvus import connections
-    from config.settings import milvus_settings
+    # Milvus Lite 不需要 connections.connect，直接使用客户端
 
-    try:
-        connections.connect(
-            host=milvus_settings.MILVUS_HOST,
-            port=milvus_settings.MILVUS_PORT
-        )
-    except Exception:
-        pass
+    # from pymilvus import connections
+    # from config.settings import milvus_settings
+    #
+    # try:
+    #     connections.connect(
+    #         host=milvus_settings.MILVUS_HOST,
+    #         port=milvus_settings.MILVUS_PORT
+    #     )
+    # except Exception:
+    pass
 
     vector = _get_embedding_vector(question)
 
@@ -105,16 +107,18 @@ def retrieve_child_chunks(question: str, limit: int = 10) -> List[Dict]:
 
 
 async def retrieve_child_chunks_async(question: str, limit: int = 10) -> List[Dict]:
-    from pymilvus import connections
-    from config.settings import milvus_settings
+    # Milvus Lite 不需要 connections.connect，直接使用客户端
 
-    try:
-        connections.connect(
-            host=milvus_settings.MILVUS_HOST,
-            port=milvus_settings.MILVUS_PORT
-        )
-    except Exception:
-        pass
+    # from pymilvus import connections
+    # from config.settings import milvus_settings
+    #
+    # try:
+    #     connections.connect(
+    #         host=milvus_settings.MILVUS_HOST,
+    #         port=milvus_settings.MILVUS_PORT
+    #     )
+    # except Exception:
+    pass
 
     vector = await _get_embedding_vector_async(question)
 
