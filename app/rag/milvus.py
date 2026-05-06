@@ -22,7 +22,7 @@ class MilvusClientFactory:
         if self._client is None:
             self._client = MilvusClient(
                 # f"http://{milvus_settings.MILVUS_HOST}:{milvus_settings.MILVUS_PORT}"
-                patn = milvus_settings.MILVUS_LITE_PATH
+                patn=milvus_settings.MILVUS_LITE_PATH
             )
         return self._client
 
@@ -51,19 +51,44 @@ def init_milvus(collection_name: str) -> Collection:
     # 在服务器上用milvuslite，不用connect，本地则需要
     # connections.connect(host=milvus_settings.MILVUS_HOST, port=milvus_settings.MILVUS_PORT)
 
+    # if utility.has_collection(collection_name):
+    #     print(f"集合 {collection_name} 已存在，将删除重建以确保数据干净...")
+    #     utility.drop_collection(collection_name)
+    #
+    # schema = create_schema()
+    # collection = Collection(collection_name, schema)
+    #
+    # index_params = {
+    #     "metric_type": "COSINE",
+    #     "index_type": "HNSW",
+    #     "params": {"M": 8, "efConstruction": 200}
+    # }
+    # collection.create_index(field_name="vector", index_params=index_params)
+    # print("Milvus 集合初始化完成。")
+    # return collection
+    """初始化 Milvus Lite 集合"""
+    client = MilvusSessionLocal()
 
-    if utility.has_collection(collection_name):
-        print(f"集合 {collection_name} 已存在，将删除重建以确保数据干净...")
-        utility.drop_collection(collection_name)
+    # 检查集合并删除（如果存在）
+    try:
+        collections = client.list_collections()
+        if collection_name in collections:
+            print(f"集合 {collection_name} 已存在，将删除重建以确保数据干净...")
+            client.drop_collection(collection_name)
+    except Exception as e:
+        print(f"检查集合时出错：{e}")
 
-    schema = create_schema()
-    collection = Collection(collection_name, schema)
+    # 创建集合并创建索引
+    client.create_collection(
+        collection_name=collection_name,
+        dimension=DIMENSION,
+        metric_type="COSINE",
+        auto_id=True,
+        index_params={
+            "index_type": "HNSW",
+            "params": {"M": 8, "efConstruction": 200}
+        }
+    )
 
-    index_params = {
-        "metric_type": "COSINE",
-        "index_type": "HNSW",
-        "params": {"M": 8, "efConstruction": 200}
-    }
-    collection.create_index(field_name="vector", index_params=index_params)
     print("Milvus 集合初始化完成。")
-    return collection
+    return client

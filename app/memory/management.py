@@ -67,8 +67,8 @@ class MemoryService:
             from app.middleware import service_health
             service_health.mark_milvus_down()
             raise
-
-        self._ensure_collection_loaded()
+        # Milvus Lite 不需要显式加载集合
+        # self._ensure_collection_loaded()
 
     def _ensure_collection_loaded(self):
         # try:

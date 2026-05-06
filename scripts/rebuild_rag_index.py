@@ -88,18 +88,30 @@ async def rebuild_index(tables):
         return
 
     print(f"向量化完成: {len(vectors)} 个向量")
-
+    # 注释掉的是本地用的
+    # print("\n[6/7] 写入 Milvus...")
+    # data = prepare_child_data(child_chunks, vectors)
+    #
+    # try:
+    #     mr = collection.insert(data)
+    #     collection.flush()
+    #     print(f"✅ 成功插入 {mr.insert_count} 条数据到 Milvus")
+    # except Exception as e:
+    #     print(f"❌ 插入失败: {e}")
+    #     return
     print("\n[6/7] 写入 Milvus...")
     data = prepare_child_data(child_chunks, vectors)
 
     try:
-        mr = collection.insert(data)
-        collection.flush()
-        print(f"✅ 成功插入 {mr.insert_count} 条数据到 Milvus")
+        # MilvusClient 的 insert 方法
+        mr = client.insert(
+            collection_name=COLLECTION_NAME,
+            data=data
+        )
+        print(f"✅ 成功插入 {mr.get('insert_count', 0)} 条数据到 Milvus")
     except Exception as e:
-        print(f"❌ 插入失败: {e}")
+        print(f"❌ 插入失败：{e}")
         return
-
     print("\n[7/7] 构建 BM25 索引...")
     from app.rag.bm25_index import bm25_index
 
