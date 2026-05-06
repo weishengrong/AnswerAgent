@@ -22,7 +22,7 @@ class MilvusClientFactory:
         if self._client is None:
             self._client = MilvusClient(
                 # f"http://{milvus_settings.MILVUS_HOST}:{milvus_settings.MILVUS_PORT}"
-                patn=milvus_settings.MILVUS_LITE_PATH
+                path=milvus_settings.MILVUS_LITE_PATH
             )
         return self._client
 
