@@ -29,10 +29,10 @@ class MemoryService:
     def _connect(self):
         config = {
             "llm": {
-                "provider": "ollama",
+                "provider": "openai",
                 "config": {
                     "model": llm_settings.LLM_MODEL_NAME,
-                    "ollama_base_url": "http://localhost:11434",
+                    "openai_base_url": llm_settings.LLM_BASE_URL,
                     "api_key": llm_settings.LLM_API_KEY
                 }
             },
