@@ -6,24 +6,11 @@ sys.path.insert(0, ".")
 
 from utils.chunk_builder import build_chunks
 from utils.parent_store import parent_store
-from app.rag.milvus import init_milvus, MilvusSessionLocal
+from app.rag.chroma import init_chroma, ChromaSessionLocal
 from app.rag.embedding import get_embeddings
 from config.settings import rag_settings
 
 COLLECTION_NAME = rag_settings.RAG_COLLECTION_NAME
-
-
-def prepare_child_data(chunks, vectors):
-    data = [[], [], [], [], []]
-
-    for i, chunk in enumerate(chunks):
-        data[0].append(vectors[i])
-        data[1].append(chunk.chunk_type)
-        data[2].append(chunk.parent_id)
-        data[3].append(chunk.field_name)
-        data[4].append(chunk.content)
-
-    return data
 
 
 async def rebuild_from_docx(docx_path: str):
@@ -69,9 +56,9 @@ async def rebuild_index(tables):
     parent_chunks, child_chunks, relation_map = build_chunks(tables)
     print(f"生成完成: {len(parent_chunks)} 父块, {len(child_chunks)} 子块")
 
-    print("\n[3/7] 初始化 Milvus...")
-    collection = init_milvus(COLLECTION_NAME)
-    client = MilvusSessionLocal()
+    print("\n[3/7] 初始化 Chroma...")
+    collection = init_chroma(COLLECTION_NAME)
+    client = ChromaSessionLocal()
 
     print("\n[4/7] 存储父块到 Redis...")
     parent_store.set_relation_map(relation_map)
@@ -88,27 +75,27 @@ async def rebuild_index(tables):
         return
 
     print(f"向量化完成: {len(vectors)} 个向量")
-    # 注释掉的是本地用的
-    # print("\n[6/7] 写入 Milvus...")
-    # data = prepare_child_data(child_chunks, vectors)
-    #
-    # try:
-    #     mr = collection.insert(data)
-    #     collection.flush()
-    #     print(f"✅ 成功插入 {mr.insert_count} 条数据到 Milvus")
-    # except Exception as e:
-    #     print(f"❌ 插入失败: {e}")
-    #     return
-    print("\n[6/7] 写入 Milvus...")
-    data = prepare_child_data(child_chunks, vectors)
+    print("\n[6/7] 写入 Chroma...")
+
+    ids = [f"child_{c.parent_id}_{c.field_name}_{i}" for i, c in enumerate(child_chunks)]
+    documents = [c.content for c in child_chunks]
+    metadatas = [
+        {
+            "chunk_type": c.chunk_type,
+            "parent_id": c.parent_id,
+            "field_name": c.field_name,
+        }
+        for c in child_chunks
+    ]
 
     try:
-        # MilvusClient 的 insert 方法
-        mr = client.insert(
-            collection_name=COLLECTION_NAME,
-            data=data
+        collection.add(
+            ids=ids,
+            documents=documents,
+            embeddings=vectors,
+            metadatas=metadatas
         )
-        print(f"✅ 成功插入 {mr.get('insert_count', 0)} 条数据到 Milvus")
+        print(f"✅ 成功插入 {len(child_chunks)} 条数据到 Chroma")
     except Exception as e:
         print(f"❌ 插入失败：{e}")
         return

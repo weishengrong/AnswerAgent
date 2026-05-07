@@ -153,36 +153,20 @@ class ServiceHealth:
             logger.info("🟢 Milvus 恢复可用")
 
     def try_recover_milvus(self) -> bool:
-        # if self._milvus_healthy:
-        #     return True
-        # try:
-        #     from pymilvus import connections
-        #     from config.settings import milvus_settings
-        #     connections.connect(
-        #         host=milvus_settings.MILVUS_HOST,
-        #         port=milvus_settings.MILVUS_PORT,
-        #         alias=f"health_check_{uuid.uuid4().hex[:8]}"
-        #     )
-        #     self.mark_milvus_up()
-        #     return True
-
-        # Milvus Lite 不需要健康检查，始终返回 True
         if self._milvus_healthy:
             return True
         try:
-            # Milvus Lite 使用本地文件，不需要网络连接检查
-            # 只需检查文件是否存在即可
-            from config.settings import milvus_settings
+            from config.settings import chroma_settings
             import os
-            if os.path.exists(milvus_settings.MILVUS_LITE_PATH):
+            chroma_dir = chroma_settings.CHROMA_PERSIST_DIR
+            if os.path.exists(chroma_dir):
                 self.mark_milvus_up()
                 return True
             else:
-                # 文件不存在也没关系，Milvus Lite 会自动创建
                 self.mark_milvus_up()
                 return True
         except Exception as e:
-            logger.debug(f"Milvus 健康探测失败：{e}")
+            logger.debug(f"Chroma 健康探测失败：{e}")
             return False
 
     def mark_redis_down(self):

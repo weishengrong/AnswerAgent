@@ -2,7 +2,7 @@ from openai import OpenAI
 from typing import List, Optional
 
 from config.settings import embedding
-from app.rag.milvus import init_milvus, DIMENSION
+from app.rag.chroma import init_chroma, ChromaSessionLocal, DIMENSION
 from utils.docx_util import slice_document
 
 
@@ -56,7 +56,8 @@ def get_embeddings(texts: List[str]) -> Optional[List[List[float]]]:
 
 
 async def process_document(collection_name: str, FILE_PATH: str) -> None:
-    collection = init_milvus(collection_name)
+    collection = init_chroma(collection_name)
+    client = ChromaSessionLocal()
 
     texts, metas = slice_document(FILE_PATH)
     if not texts:
@@ -102,19 +103,19 @@ async def process_document(collection_name: str, FILE_PATH: str) -> None:
         print(f"❌ 致命错误：向量总浮点数不匹配！实际: {total_floats}, 期望: {expected_floats}")
         return
 
-    print("💾 正在写入 Milvus...")
+    print("💾 正在写入 Chroma...")
 
     table_names = [m["table_name"] for m in metas]
-
-    data_to_insert = [
-        vectors,
-        table_names,
-        texts
-    ]
+    ids = [f"doc_{i}" for i in range(len(texts))]
+    metadatas = [{"table_name": tn, "chunk_type": "child"} for tn in table_names]
 
     try:
-        mr = collection.insert(data_to_insert)
-        collection.flush()
-        print(f"✅ 成功！已插入 {mr.insert_count} 条数据到 Milvus 集合 '{collection_name}'。")
+        collection.add(
+            documents=texts,
+            embeddings=vectors,
+            metadatas=metadatas,
+            ids=ids
+        )
+        print(f"✅ 成功！已插入 {len(texts)} 条数据到 Chroma 集合 '{collection_name}'。")
     except Exception as e:
-        print(f"❌ 插入 Milvus 失败: {e}")
+        print(f"❌ 插入 Chroma 失败: {e}")

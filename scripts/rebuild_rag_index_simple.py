@@ -4,25 +4,11 @@ sys.path.insert(0, ".")
 
 from utils.docx_parser import parse_docx
 from utils.chunk_builder import build_chunks
-from app.rag.milvus import init_milvus, MilvusSessionLocal
+from app.rag.chroma import init_chroma, ChromaSessionLocal
 from app.rag.embedding import get_embeddings
-from app.rag.milvus import DIMENSION
 from config.settings import rag_settings
 
 COLLECTION_NAME = rag_settings.RAG_COLLECTION_NAME
-
-
-def prepare_child_data(chunks, vectors):
-    data = [[], [], [], [], []]
-
-    for i, chunk in enumerate(chunks):
-        data[0].append(vectors[i])
-        data[1].append(chunk.chunk_type)
-        data[2].append(chunk.parent_id)
-        data[3].append(chunk.field_name)
-        data[4].append(chunk.content)
-
-    return data
 
 
 async def rebuild_index(docx_path: str):
@@ -40,13 +26,12 @@ async def rebuild_index(docx_path: str):
     parent_chunks, child_chunks, relation_map = build_chunks(tables)
     print(f"生成完成: {len(parent_chunks)} 父块, {len(child_chunks)} 子块")
 
-    print("\n[3/4] 初始化 Milvus...")
-    collection = init_milvus(COLLECTION_NAME)
-    client = MilvusSessionLocal()
+    print("\n[3/4] 初始化 Chroma...")
+    collection = init_chroma(COLLECTION_NAME)
 
-    print("\n[4/4] 向量化和写入 Milvus...")
+    print("\n[4/4] 向量化和写入 Chroma...")
     if not child_chunks:
-        print("❌ 没有子块，跳过 Milvus 写入")
+        print("❌ 没有子块，跳过 Chroma 写入")
         return
 
     child_contents = [c.content for c in child_chunks]
@@ -60,18 +45,31 @@ async def rebuild_index(docx_path: str):
 
     print(f"  向量化完成: {len(vectors)} 个向量")
 
-    data = prepare_child_data(child_chunks, vectors)
+    ids = [f"child_{c.parent_id}_{c.field_name}_{i}" for i, c in enumerate(child_chunks)]
+    documents = [c.content for c in child_chunks]
+    metadatas = [
+        {
+            "chunk_type": c.chunk_type,
+            "parent_id": c.parent_id,
+            "field_name": c.field_name,
+        }
+        for c in child_chunks
+    ]
 
     try:
-        mr = collection.insert(data)
-        collection.flush()
-        print(f"✅ 成功插入 {mr.insert_count} 条数据到 Milvus")
+        collection.add(
+            ids=ids,
+            documents=documents,
+            embeddings=vectors,
+            metadatas=metadatas
+        )
+        print(f"✅ 成功插入 {len(child_chunks)} 条数据到 Chroma")
     except Exception as e:
         print(f"❌ 插入失败: {e}")
         return
 
     print("\n" + "=" * 50)
-    print("🎉 Milvus 索引重建完成!")
+    print("🎉 Chroma 索引重建完成!")
     print("=" * 50)
     print(f"\n统计:")
     print(f"  表数量: {len(parent_chunks)}")

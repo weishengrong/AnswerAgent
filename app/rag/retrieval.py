@@ -1,25 +1,29 @@
 from openai import OpenAI
 from typing import List, Dict, Tuple
-import time
 import logging
 from utils.context_assembler import FieldSelection, assemble_context
 from utils.parent_store import parent_store
-from app.rag.milvus import MilvusSessionLocal
+from app.rag.chroma import ChromaSessionLocal, chroma_search
 from app.rag.bm25_index import bm25_index
 from config.settings import embedding, rag_settings
 
 logger = logging.getLogger(__name__)
 
-_milvus_client = None
+_chroma_client = None
 
 RRF_K = 60
 
 
-def _get_milvus_client():
-    global _milvus_client
-    if _milvus_client is None:
-        _milvus_client = MilvusSessionLocal()
-    return _milvus_client
+def _get_chroma_client():
+    global _chroma_client
+    if _chroma_client is None:
+        _chroma_client = ChromaSessionLocal()
+    return _chroma_client
+
+
+def _get_collection():
+    client = _get_chroma_client()
+    return client.get_collection(rag_settings.RAG_COLLECTION_NAME)
 
 
 def _get_embedding_vector(text: str) -> List[float]:
@@ -55,87 +59,58 @@ def _identify_foreign_keys(relation_map: Dict[str, List[Dict]]) -> Dict[str, str
     return fk_map
 
 
-def _ensure_collection_loaded(collection_name: str, retries: int = 3) -> bool:
-    client = _get_milvus_client()
-    for i in range(retries):
-        try:
-            client.load_collection(collection_name=collection_name)
-            logger.info(f"✅ 集合 {collection_name} 已加载到内存")
-            return True
-        except Exception as e:
-            if i < retries - 1:
-                wait = 2 ** i
-                logger.warning(f"⚠️ 加载集合 {collection_name} 第{i+1}次失败，{wait}s 后重试：{e}")
-                time.sleep(wait)
-            else:
-                logger.error(f"❌ 加载集合 {collection_name} 失败（已重试{retries}次）：{e}")
-                from app.middleware import service_health
-                service_health.mark_milvus_down()
-                return False
-
-
 def retrieve_child_chunks(question: str, limit: int = 10) -> List[Dict]:
-    # Milvus Lite 不需要 connections.connect，直接使用客户端
-
-    # from pymilvus import connections
-    # from config.settings import milvus_settings
-    #
-    # try:
-    #     connections.connect(
-    #         host=milvus_settings.MILVUS_HOST,
-    #         port=milvus_settings.MILVUS_PORT
-    #     )
-    # except Exception:
-    pass
-
     vector = _get_embedding_vector(question)
 
-    if not _ensure_collection_loaded(rag_settings.RAG_COLLECTION_NAME):
-        return []
-
-    client = _get_milvus_client()
-    result = client.search(
-        collection_name=rag_settings.RAG_COLLECTION_NAME,
-        data=[vector],
-        limit=limit,
-        search_params={"metric_type": "COSINE"},
-        filter="chunk_type == 'child'",
-        output_fields=["parent_id", "field_name", "content", "chunk_type"]
+    collection = _get_collection()
+    results = collection.query(
+        query_embeddings=[vector],
+        n_results=limit,
+        where={"chunk_type": {"$eq": "child"}},
+        include=["metadatas", "documents", "distances"]
     )
 
-    return result[0] if result else []
+    formatted = []
+    if results and results.get("ids") and len(results["ids"]) > 0:
+        for i in range(len(results["ids"][0])):
+            item = {
+                "id": results["ids"][0][i],
+                "distance": results["distances"][0][i] if results.get("distances") else 0,
+            }
+            if results.get("metadatas") and results["metadatas"][0]:
+                item.update(results["metadatas"][0][i])
+            if results.get("documents") and results["documents"][0]:
+                item["content"] = results["documents"][0][i]
+            formatted.append(item)
+
+    return formatted
 
 
 async def retrieve_child_chunks_async(question: str, limit: int = 10) -> List[Dict]:
-    # Milvus Lite 不需要 connections.connect，直接使用客户端
-
-    # from pymilvus import connections
-    # from config.settings import milvus_settings
-    #
-    # try:
-    #     connections.connect(
-    #         host=milvus_settings.MILVUS_HOST,
-    #         port=milvus_settings.MILVUS_PORT
-    #     )
-    # except Exception:
-    pass
-
     vector = await _get_embedding_vector_async(question)
 
-    if not _ensure_collection_loaded(rag_settings.RAG_COLLECTION_NAME):
-        return []
-
-    client = _get_milvus_client()
-    result = client.search(
-        collection_name=rag_settings.RAG_COLLECTION_NAME,
-        data=[vector],
-        limit=limit,
-        search_params={"metric_type": "COSINE"},
-        filter="chunk_type == 'child'",
-        output_fields=["parent_id", "field_name", "content", "chunk_type"]
+    collection = _get_collection()
+    results = collection.query(
+        query_embeddings=[vector],
+        n_results=limit,
+        where={"chunk_type": {"$eq": "child"}},
+        include=["metadatas", "documents", "distances"]
     )
 
-    return result[0] if result else []
+    formatted = []
+    if results and results.get("ids") and len(results["ids"]) > 0:
+        for i in range(len(results["ids"][0])):
+            item = {
+                "id": results["ids"][0][i],
+                "distance": results["distances"][0][i] if results.get("distances") else 0,
+            }
+            if results.get("metadatas") and results["metadatas"][0]:
+                item.update(results["metadatas"][0][i])
+            if results.get("documents") and results["documents"][0]:
+                item["content"] = results["documents"][0][i]
+            formatted.append(item)
+
+    return formatted
 
 
 def bm25_search(question: str, top_k: int = 10) -> List[Dict]:
@@ -333,25 +308,28 @@ async def retrieve_schema(question: str, relation_map: Dict[str, List[Dict]]) ->
 async def retrieve_table_info_simple(question: str) -> str:
     vector = await _get_embedding_vector_async(question)
 
-    if not _ensure_collection_loaded(rag_settings.RAG_COLLECTION_NAME):
-        return "加载集合失败"
-
-    client = _get_milvus_client()
-    result = client.search(
-        collection_name=rag_settings.RAG_COLLECTION_NAME,
-        data=[vector],
-        limit=3,
-        search_params={"metric_type": "COSINE"},
-        output_fields=["table_name", "content"]
+    collection = _get_collection()
+    results = collection.query(
+        query_embeddings=[vector],
+        n_results=3,
+        include=["metadatas", "documents", "distances"]
     )
 
     vector_tables = []
     seen = set()
-    for item in result[0]:
-        table_name = item.get("table_name", "未知表")
-        if table_name not in seen:
-            vector_tables.append(table_name)
-            seen.add(table_name)
+
+    if results and results.get("ids") and len(results["ids"]) > 0:
+        for i in range(len(results["ids"][0])):
+            item = {}
+            if results.get("metadatas") and results["metadatas"][0]:
+                item = results["metadatas"][0][i]
+            if results.get("documents") and results["documents"][0]:
+                item["content"] = results["documents"][0][i]
+
+            table_name = item.get("table_name", "未知表")
+            if table_name not in seen:
+                vector_tables.append(table_name)
+                seen.add(table_name)
 
     bm25_results = bm25_search(question, top_k=5)
     for r in bm25_results:
@@ -365,10 +343,5 @@ async def retrieve_table_info_simple(question: str) -> str:
         parent_content = await parent_store.get_parent(table_name)
         if parent_content:
             formatted_content.append(f"表名：{table_name}\n{parent_content}")
-        else:
-            for item in result[0]:
-                if item.get("table_name") == table_name:
-                    formatted_content.append(f"表名：{table_name}\n{item.get('content', '')}")
-                    break
 
     return "\n\n".join(formatted_content) if formatted_content else "未找到相关表信息"

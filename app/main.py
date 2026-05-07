@@ -2,12 +2,15 @@ from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
 from fastapi.responses import StreamingResponse
+from fastapi.middleware.cors import CORSMiddleware
 from app.agent.workflow import workflow
 from app.memory.session import smart_session_memory
 from app.memory.filter import memory_filter
 from app.middleware import get_trace_id, service_health
 from app.events import EventEmitter
-from config.settings import milvus_settings
+from app.auth.api import router as auth_router
+from app.auth.models import init_auth_db
+from config.settings import chroma_settings
 import asyncio
 import logging
 import uuid
@@ -15,22 +18,11 @@ import uuid
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    # 检查milvus健康状态
-    # try:
-    #     from pymilvus import connections
-    #     connections.connect(
-    #         host=milvus_settings.MILVUS_HOST,
-    #         port=milvus_settings.MILVUS_PORT
-    #     )
-    #     service_health.mark_milvus_up()
-    #     logging.info("✅ Milvus 连接成功")
-    # except Exception as e:
-    #     service_health.mark_milvus_down()
-    #     logging.warning(f"⚠️ Milvus 连接失败（降级运行）：{e}")
+    await init_auth_db()
+    logging.info("✅ 用户认证数据库初始化完成")
 
-    # Milvus Lite 不需要网络连接，直接标记为健康
     service_health.mark_milvus_up()
-    logging.info("✅ Milvus Lite 已初始化")
+    logging.info("✅ Chroma 已初始化")
 
     if service_health.milvus_healthy:
         try:
@@ -42,7 +34,7 @@ async def lifespan(app: FastAPI):
             if not service_health.milvus_healthy:
                 service_health.try_recover_milvus()
     else:
-        logging.info("⏭️ Milvus 不可用，跳过过期记忆清理")
+        logging.info("⏭️ Chroma 不可用，跳过过期记忆清理")
 
     try:
         from app.rag.bm25_index import bm25_index
@@ -57,14 +49,24 @@ async def lifespan(app: FastAPI):
     yield
 
     try:
-        from app.rag.milvus import MilvusSessionLocal
-        MilvusSessionLocal().close()
-        logging.info("✅ Milvus 连接已关闭")
+        from app.rag.chroma import ChromaSessionLocal
+        ChromaSessionLocal().close()
+        logging.info("✅ Chroma 连接已关闭")
     except Exception:
         pass
 
 
 app = FastAPI(title="AnswerAgent", version="2.0", lifespan=lifespan)
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:3000", "http://127.0.0.1:3000"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+app.include_router(auth_router)
 
 logging.basicConfig(
     level=logging.INFO,

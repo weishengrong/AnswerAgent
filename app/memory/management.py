@@ -1,6 +1,6 @@
 from mem0 import Memory
 from mem0.configs.base import MemoryConfig
-from config.settings import embedding, llm_settings, milvus_settings
+from config.settings import embedding, llm_settings, chroma_settings
 import logging
 from typing import List, Dict, Any, Optional
 
@@ -18,7 +18,7 @@ class MemoryService:
     def __init__(self):
         self._memory = None
         self._connected = False
-        logger.info("✅ MemoryService 延迟初始化（未连接 Milvus）")
+        logger.info("✅ MemoryService 延迟初始化（未连接 Chroma）")
 
     @property
     def memory(self):
@@ -45,13 +45,10 @@ class MemoryService:
                 }
             },
             "vector_store": {
-                "provider": "milvus",
+                "provider": "chroma",
                 "config": {
-                    # "url": f"http://{milvus_settings.MILVUS_HOST}:{milvus_settings.MILVUS_PORT}",
-                    "local_path": milvus_settings.MILVUS_LITE_PATH,
+                    "path": chroma_settings.CHROMA_PERSIST_DIR,
                     "collection_name": "answer_agent_memory",
-                    "embedding_model_dims": 1024,
-                    "token": "",
                 }
             }
         }
@@ -60,45 +57,17 @@ class MemoryService:
             config_obj = MemoryConfig(**config)
             self._memory = Memory(config=config_obj)
             self._connected = True
-            logger.info("✅ MemoryService 延迟连接 Milvus 成功")
+            logger.info("✅ MemoryService 延迟连接 Chroma 成功")
         except Exception as e:
             self._connected = False
-            logger.error(f"❌ MemoryService 连接 Milvus 失败：{e}")
+            logger.error(f"❌ MemoryService 连接 Chroma 失败：{e}")
             from app.middleware import service_health
             service_health.mark_milvus_down()
             raise
-        # Milvus Lite 不需要显式加载集合
-        # self._ensure_collection_loaded()
-
-    def _ensure_collection_loaded(self):
-        # try:
-        #     from pymilvus import utility, connections, Collection
-        #
-        #     try:
-        #         connections.connect(
-        #             alias="memory_service",
-        #             host=milvus_settings.MILVUS_HOST,
-        #             port=milvus_settings.MILVUS_PORT
-        #         )
-        #     except Exception:
-        #         pass
-        #
-        #     if utility.has_collection("answer_agent_memory", using="memory_service"):
-        #         col = Collection("answer_agent_memory", using="memory_service")
-        #         col.load()
-        #         logger.info("✅ 集合 answer_agent_memory 已加载到内存")
-        #     else:
-        #         logger.info("ℹ️ 集合 answer_agent_memory 不存在，将由 mem0 自动创建")
-        # except Exception as e:
-        #     logger.warning(f"⚠️ 显式加载集合失败（非致命，mem0 可能自行处理）：{e}")
-
-        # Milvus Lite 不需要显式加载集合，会自动处理
-        logger.info("ℹ️ Milvus Lite 模式，集合将自动创建和加载")
 
     def _handle_error(self, operation: str, error: Exception, fallback=None):
         if _is_recoverable_error(error):
-            logger.warning(f"⚠️ {operation} 遇到可恢复错误（集合未加载），尝试重新加载：{error}")
-            self._ensure_collection_loaded()
+            logger.warning(f"⚠️ {operation} 遇到可恢复错误：{error}")
             from app.middleware import service_health
             service_health.mark_milvus_up()
             return fallback
