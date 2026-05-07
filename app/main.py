@@ -60,7 +60,7 @@ app = FastAPI(title="AnswerAgent", version="2.0", lifespan=lifespan)
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000", "http://127.0.0.1:3000"],
+    allow_origins=[ "http://124.223.93.65", "http://124.223.93.65:3000", "http://127.0.0.1"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],

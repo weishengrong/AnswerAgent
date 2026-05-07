@@ -1,0 +1,40 @@
+# --- Python 编译缓存 ---
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# --- 虚拟环境 ---
+venv/
+env/
+.venv/
+ENV/
+
+# --- 环境变量与敏感配置 ---
+.env
+.env.local
+*.env
+
+# --- 日志与输出文件 ---
+*.log
+nohup.out
+logs/
+
+# --- 数据库与数据文件 (根据你的项目情况) ---
+*.db
+*.sqlite
+*.sqlite3
+chroma_data/
+*.h5
+*.pkl
+
+# --- IDE 与编辑器配置 ---
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# --- 操作系统文件 ---
+.DS_Store
+Thumbs.db
