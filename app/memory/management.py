@@ -178,20 +178,15 @@ class MemoryService:
             run_id: Optional[str] = None
     ) -> Dict[str, Any]:
         try:
-            result = self.memory.get_all(
-                user_id=user_id,
-                run_id=run_id
-            )
+            filters = {"user_id": user_id}
+            result = self.memory.get_all(filters=filters)
             return result
         except Exception as e:
             return self._handle_error("获取全部记忆", e, fallback={"results": []})
 
     def delete_session(self, run_id: str, user_id: Optional[str] = None) -> None:
-        self.memory.delete(
-            user_id=user_id,
-            run_id=run_id
-        )
-
+        filters = {"user_id": user_id, "run_id": run_id}
+        self.memory.delete(filters=filters)
         logger.info(f"🗑️ 删除会话：{run_id}")
 
 
