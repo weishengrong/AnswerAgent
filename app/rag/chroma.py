@@ -1,38 +1,29 @@
 import chromadb
-from chromadb.config import Settings
 from typing import Optional, List, Dict, Any
 
 from config.settings import chroma_settings, rag_settings
 
 DIMENSION = 1024
 
-
-class ChromaClientFactory:
-    _instance: Optional["ChromaClientFactory"] = None
-    _client: Optional[chromadb.PersistentClient] = None
-
-    def __new__(cls) -> "ChromaClientFactory":
-        if cls._instance is None:
-            cls._instance = super().__new__(cls)
-        return cls._instance
-
-    def __call__(self) -> chromadb.PersistentClient:
-        if self._client is None:
-            self._client = chromadb.PersistentClient(
-                path=chroma_settings.CHROMA_PERSIST_DIR
-            )
-        return self._client
-
-    def close(self) -> None:
-        if self._client:
-            self._client = None
+_client: Optional[chromadb.PersistentClient] = None
 
 
-ChromaSessionLocal = ChromaClientFactory()
+def get_chroma_client() -> chromadb.PersistentClient:
+    global _client
+    if _client is None:
+        _client = chromadb.PersistentClient(
+            path=chroma_settings.CHROMA_PERSIST_DIR
+        )
+    return _client
+
+
+def close_chroma():
+    global _client
+    _client = None
 
 
 def init_chroma(collection_name: str) -> chromadb.Collection:
-    client = ChromaSessionLocal()
+    client = get_chroma_client()
 
     try:
         collections = client.list_collections()
@@ -57,7 +48,6 @@ def chroma_search(
     query_embeddings: List[List[float]],
     n_results: int = 10,
     where: Optional[Dict[str, Any]] = None,
-    output_fields: Optional[List[str]] = None
 ) -> List[Dict[str, Any]]:
     results = collection.query(
         query_embeddings=query_embeddings,
@@ -80,3 +70,11 @@ def chroma_search(
             formatted_results.append(item)
 
     return formatted_results
+
+
+class ChromaSessionLocal:
+    def __call__(self) -> chromadb.PersistentClient:
+        return get_chroma_client()
+
+    def close(self) -> None:
+        close_chroma()
