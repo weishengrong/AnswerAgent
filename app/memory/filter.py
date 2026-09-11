@@ -6,7 +6,7 @@ import logging
 import numpy as np
 import json
 
-from config.settings import embedding
+from app.core.config.settings import embedding
 from app.memory.management import memory_manager
 
 logger = logging.getLogger(__name__)
@@ -79,7 +79,7 @@ class MemoryFilter:
             from pydantic_ai import Agent
             from pydantic_ai.models.openai import OpenAIChatModel
             from pydantic_ai.providers.openai import OpenAIProvider
-            from config.settings import llm_settings
+            from app.core.config.settings import llm_settings
 
             llm_model = OpenAIChatModel(
                 model_name=llm_settings.LLM_MODEL_NAME,

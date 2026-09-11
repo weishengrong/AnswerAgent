@@ -40,7 +40,7 @@ class MCPRegistry:
             return
 
         if config_path is None:
-            config_path = str(Path(__file__).parent.parent.parent / "config" / "mcp_servers.yaml")
+            config_path = str(Path(__file__).parent.parent / "core" / "config" / "mcp_servers.yaml")
 
         if not os.path.exists(config_path):
             logger.warning(f"⚠️ MCP 配置文件不存在：{config_path}")

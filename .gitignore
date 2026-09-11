@@ -38,3 +38,16 @@ chroma_data/
 # --- 操作系统文件 ---
 .DS_Store
 Thumbs.db
+
+# --- 打包产物与编辑器/数据缓存 ---
+*.zip
+.qoder/
+.trae/
+rag_chroma_data/
+.uploads/
+data/
+# --- 评测数据（不推送） ---
+livesqlbench_data/
+# --- 文档（不推送） ---
+docs/
+openspec/

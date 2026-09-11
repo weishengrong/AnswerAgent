@@ -49,12 +49,12 @@ pip install -r requirements.txt
 
 ### 3. 初始化数据库（示例）
 
-可将 `scripts/init_test_data.sql` 导入你的 MySQL 库（表结构与种子数据依项目而定）。
+可将 `scripts/db/init_test_data.sql` 导入你的 MySQL 库（表结构与种子数据依项目而定）。
 
 ### 4. 构建 Schema RAG 索引（可选但推荐）
 
 ```bash
-python scripts/rebuild_rag_index.py --source sql --file resource/schema.sql --enrich
+python -m scripts.index.rebuild_rag_index --source sql --file resource/schema.sql --enrich
 ```
 
 启动应用时会尝试从 Redis 加载 BM25 索引；若未构建会降级为纯向量检索。
@@ -90,15 +90,15 @@ app/
   mcp/           # MCP 工具桥接（可选）
 config/           # settings、Redis、DB
 prompts/          # Schema 与 Few-shot 等提示模板
-scripts/          # 索引重建、意图/ReAct 评测等
+scripts/          # 脚本目录（evaluation/ 评测、datasets/ 数据集、index/ 索引、db/ 数据库、utils/ 工具、data/ 数据）
 resource/         # DDL 等静态资源
 ```
 
 ## 评测脚本（可选）
 
 ```bash
-python scripts/evaluate_intent.py      # 意图与路由相关 case
-python scripts/evaluate_react.py       # ReAct 健壮性与反思路径
+python -m scripts.evaluation.evaluate_intent      # 意图与路由相关 case
+python -m scripts.evaluation.evaluate_react       # ReAct 健壮性与反思路径
 ```
 
 ## MCP

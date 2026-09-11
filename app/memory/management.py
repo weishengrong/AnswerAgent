@@ -1,6 +1,6 @@
 from mem0 import Memory
 from mem0.configs.base import MemoryConfig
-from config.settings import embedding, llm_settings, chroma_settings
+from app.core.config.settings import embedding, llm_settings, chroma_settings
 import logging
 from typing import List, Dict, Any, Optional
 
@@ -62,19 +62,19 @@ class MemoryService:
             self._connected = False
             logger.error(f"❌ MemoryService 连接 Chroma 失败：{e}")
             from app.middleware import service_health
-            service_health.mark_milvus_down()
+            service_health.mark_chroma_down()
             raise
 
     def _handle_error(self, operation: str, error: Exception, fallback=None):
         if _is_recoverable_error(error):
             logger.warning(f"⚠️ {operation} 遇到可恢复错误：{error}")
             from app.middleware import service_health
-            service_health.mark_milvus_up()
+            service_health.mark_chroma_up()
             return fallback
         else:
             logger.error(f"❌ {operation} 失败：{error}")
             from app.middleware import service_health
-            service_health.mark_milvus_down()
+            service_health.mark_chroma_down()
             return fallback
 
     def add_memory(
@@ -178,8 +178,7 @@ class MemoryService:
             run_id: Optional[str] = None
     ) -> Dict[str, Any]:
         try:
-            filters = {"user_id": user_id}
-            result = self.memory.get_all(filters=filters)
+            result = self.memory.get_all(user_id=user_id, run_id=run_id)
             return result
         except Exception as e:
             return self._handle_error("获取全部记忆", e, fallback={"results": []})

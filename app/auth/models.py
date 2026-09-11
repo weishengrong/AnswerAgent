@@ -1,6 +1,6 @@
 from sqlalchemy import Column, Integer, String, DateTime
 from sqlalchemy.sql import func
-from config.db_config import engine
+from app.core.config.db_config import engine
 from sqlalchemy.orm import DeclarativeBase
 
 

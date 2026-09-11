@@ -2,17 +2,33 @@ import json
 import logging
 from typing import Any, Dict, List, Optional
 
-from app.agent.tools.base import BaseTool, ToolResult
+from pydantic import BaseModel
+
 from app.mcp.manager import get_manager
 
 logger = logging.getLogger(__name__)
 
 
-class MCPToolBridge(BaseTool):
+class ToolResult(BaseModel):
+    """工具执行结果"""
+    success: bool
+    data: Any = None
+    error: Optional[str] = None
+
+    def to_dict(self) -> Dict:
+        result = {"success": self.success}
+        if self.data is not None:
+            result["data"] = self.data
+        if self.error is not None:
+            result["error"] = self.error
+        return result
+
+
+class MCPToolBridge:
     """MCP 工具桥接器
 
-    将 MCP Server 上的单个工具包装为 BaseTool，
-    使其可以无缝接入现有的 ReAct 循环和 Skill 体系。
+    将 MCP Server 上的单个工具包装为可调用对象，
+    使其可以无缝接入 LangGraph 工具体系。
 
     设计模式：Adapter Pattern
     - 每个远端 MCP 工具 → 一个 MCPToolBridge 实例
@@ -67,17 +83,7 @@ class MCPToolBridge(BaseTool):
 
 
 async def get_mcp_tools() -> List[MCPToolBridge]:
-    """自动发现所有已启用 MCP Server 的工具，并包装为 BaseTool 列表
-
-    流程：
-    1. 从 Registry 获取所有已启用的 MCP Server
-    2. 通过 Manager 连接每个 Server
-    3. 调用 list_tools 发现可用工具
-    4. 将每个工具包装为 MCPToolBridge
-
-    Returns:
-        List[MCPToolBridge]: 可直接注册到 Skill 的工具列表
-    """
+    """自动发现所有已启用 MCP Server 的工具，并包装为工具列表"""
     manager = get_manager()
     await manager.initialize()
 
@@ -107,53 +113,11 @@ async def get_mcp_tools() -> List[MCPToolBridge]:
     return tools
 
 
-def get_mcp_tools_sync() -> List[MCPToolBridge]:
-    """同步版本的 MCP 工具发现（用于 Skill 类定义时）
-
-    注意：此方法不连接 Server，仅根据配置预创建 Bridge 实例。
-    工具的 inputSchema 会在首次 execute 时动态获取。
-
-    Returns:
-        List[MCPToolBridge]: 预创建的工具桥接列表
-    """
-    from app.mcp.registry import get_registry
-
-    registry = get_registry()
-    tools = []
-
-    for config in registry.get_enabled():
-        bridge = MCPToolBridge(
-            server_name=config.name,
-            tool_name="*",
-            tool_description=config.description,
-            input_schema={
-                "type": "object",
-                "properties": {
-                    "tool_name": {
-                        "type": "string",
-                        "description": f"要调用的工具名称（{config.name} 提供的工具）"
-                    },
-                    "arguments": {
-                        "type": "object",
-                        "description": "工具参数"
-                    }
-                },
-                "required": ["tool_name"]
-            }
-        )
-        bridge.name = f"mcp_{config.name}"
-        bridge.description = f"[MCP:{config.name}] {config.description}。通过 tool_name 指定要调用的具体工具。"
-        tools.append(bridge)
-
-    return tools
-
-
-class MCPLazyToolBridge(BaseTool):
+class MCPLazyToolBridge:
     """懒加载 MCP 工具桥接器
 
     每个 MCP Server 对应一个 MCPLazyToolBridge 实例。
     首次 execute 时才连接 Server 并调用工具。
-    适合在 Skill 类定义时使用，无需提前连接。
     """
 
     def __init__(self, server_name: str, description: str):
@@ -212,11 +176,7 @@ class MCPLazyToolBridge(BaseTool):
 
 
 def get_lazy_mcp_tools() -> List[MCPLazyToolBridge]:
-    """获取懒加载 MCP 工具列表（每个 Server 一个 Bridge）
-
-    适合在 Skill 类定义时使用，无需提前连接 MCP Server。
-    首次调用 execute 时才会连接。
-    """
+    """获取懒加载 MCP 工具列表（每个 Server 一个 Bridge）"""
     from app.mcp.registry import get_registry
 
     registry = get_registry()

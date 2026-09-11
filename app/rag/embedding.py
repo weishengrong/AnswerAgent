@@ -1,9 +1,9 @@
 from openai import OpenAI
 from typing import List, Optional
 
-from config.settings import embedding
+from app.core.config.settings import embedding
 from app.rag.chroma import init_chroma, ChromaSessionLocal, DIMENSION
-from utils.docx_util import slice_document
+from utils.docx.util import slice_document
 
 
 def get_embeddings(texts: List[str]) -> Optional[List[List[float]]]:

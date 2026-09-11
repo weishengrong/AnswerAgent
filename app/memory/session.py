@@ -4,12 +4,12 @@ from datetime import datetime
 from typing import List, Optional
 
 from pydantic import BaseModel, Field
-from config.redis import get_redis_client
-from config.settings import memory_settings
+from app.core.config.redis import get_redis_client
+from app.core.config.settings import memory_settings
 from pydantic_ai import Agent
 from pydantic_ai.models.openai import OpenAIChatModel
 from pydantic_ai.providers.openai import OpenAIProvider
-from config.settings import llm_settings
+from app.core.config.settings import llm_settings
 
 logger = logging.getLogger(__name__)
 
